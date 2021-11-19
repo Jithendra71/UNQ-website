@@ -122,5 +122,164 @@ http.listen(3000, function () {
 			});
 		});
 
+		app.get("/updateProfile", function (request, result) {
+			result.render("updateProfile");
+		});
+
+		
+		app.post("/getUser", function (request, result) {
+			var accessToken = request.fields.accessToken;
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+					result.json({
+						"status": "success",
+						"message": "Record has been fetched.",
+						"data": user
+					});
+				}
+			});
+		});
+
+		app.get("/logout", function (request, result) {
+			result.redirect("/login");
+		});
+
+		app.post("/uploadCoverPhoto", function (request, result) {
+			var accessToken = request.fields.accessToken;
+			var coverPhoto = "";
+
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+
+					if (request.files.coverPhoto.size > 0 && request.files.coverPhoto.type.includes("image")) {
+
+						if (user.coverPhoto != "") {
+							fileSystem.unlink(user.coverPhoto, function (error) {
+								//
+							});
+						}
+
+						coverPhoto = "public/images/" + new Date().getTime() + "-" + request.files.coverPhoto.name;
+
+						// Read the file
+	                    fileSystem.readFile(request.files.coverPhoto.path, function (err, data) {
+	                        if (err) throw err;
+	                        console.log('File read!');
+
+	                        // Write the file
+	                        fileSystem.writeFile(coverPhoto, data, function (err) {
+	                            if (err) throw err;
+	                            console.log('File written!');
+
+	                            database.collection("users").updateOne({
+									"accessToken": accessToken
+								}, {
+									$set: {
+										"coverPhoto": coverPhoto
+									}
+								}, function (error, data) {
+									result.json({
+										"status": "status",
+										"message": "Cover photo has been updated.",
+										data: mainURL + "/" + coverPhoto
+									});
+								});
+	                        });
+
+	                        // Delete the file
+	                        fileSystem.unlink(request.files.coverPhoto.path, function (err) {
+	                            if (err) throw err;
+	                            console.log('File deleted!');
+	                        });
+	                    });
+					} else {
+						result.json({
+							"status": "error",
+							"message": "Please select valid image."
+						});
+					}
+				}
+			});
+		});
+
+		app.post("/uploadProfileImage", function (request, result) {
+			var accessToken = request.fields.accessToken;
+			var profileImage = "";
+
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+
+					if (request.files.profileImage.size > 0 && request.files.profileImage.type.includes("image")) {
+
+						if (user.profileImage != "") {
+							fileSystem.unlink(user.profileImage, function (error) {
+								//
+							});
+						}
+
+						profileImage = "public/images/" + new Date().getTime() + "-" + request.files.profileImage.name;
+
+						// Read the file
+	                    fileSystem.readFile(request.files.profileImage.path, function (err, data) {
+	                        if (err) throw err;
+	                        console.log('File read!');
+
+	                        // Write the file
+	                        fileSystem.writeFile(profileImage, data, function (err) {
+	                            if (err) throw err;
+	                            console.log('File written!');
+
+	                            database.collection("users").updateOne({
+									"accessToken": accessToken
+								}, {
+									$set: {
+										"profileImage": profileImage
+									}
+								}, function (error, data) {
+									result.json({
+										"status": "status",
+										"message": "Profile image has been updated.",
+										data: mainURL + "/" + profileImage
+									});
+								});
+	                        });
+
+	                        // Delete the file
+	                        fileSystem.unlink(request.files.profileImage.path, function (err) {
+	                            if (err) throw err;
+	                            console.log('File deleted!');
+	                        });
+	                    });
+					} else {
+						result.json({
+							"status": "error",
+							"message": "Please select valid image."
+						});
+					}
+				}
+			});
+		});
+
 	});
 });
