@@ -206,7 +206,7 @@ http.listen(3000, function () {
 									}
 								}, function (error, data) {
 									result.json({
-										"status": "status",
+										"status": "success",
 										"message": "Cover photo has been updated.",
 										data: mainURL + "/" + coverPhoto
 									});
@@ -477,6 +477,133 @@ http.listen(3000, function () {
 							"data": data
 						});
 					});
+				}
+			});
+		});
+
+		app.post("/toggleLikePost", function (request, result) {
+
+			var accessToken = request.fields.accessToken;
+			var _id = request.fields._id;
+
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+
+					database.collection("posts").findOne({
+						"_id": ObjectId(_id)
+					}, function (error, post) {
+						if (post == null) {
+							result.json({
+								"status": "error",
+								"message": "Post does not exist."
+							});
+						} else {
+
+							var isLiked = false;
+							for (var a = 0; a < post.likers.length; a++) {
+								var liker = post.likers[a];
+
+								if (liker._id.toString() == user._id.toString()) {
+									isLiked = true;
+									break;
+								}
+							}
+
+							if (isLiked) {
+								database.collection("posts").updateOne({
+									"_id": ObjectId(_id)
+								}, {
+									$pull: {
+										"likers": {
+											"_id": user._id,
+										}
+									}
+								}, function (error, data) {
+
+									database.collection("users").updateOne({
+										$and: [{
+											"_id": post.user._id
+										}, {
+											"posts._id": post._id
+										}]
+									}, {
+										$pull: {
+											"posts.$[].likers": {
+												"_id": user._id,
+											}
+										}
+									});
+
+									result.json({
+										"status": "unliked",
+										"message": "Post has been unliked."
+									});
+								});
+							} else {
+
+								database.collection("users").updateOne({
+									"_id": post.user._id
+								}, {
+									$push: {
+										"notifications": {
+											"_id": ObjectId(),
+											"type": "photo_liked",
+											"content": user.name + " has liked your post.",
+											"profileImage": user.profileImage,
+											// "isRead": false,
+											"post": {
+												"_id": post._id
+											},
+											"createdAt": new Date().getTime()
+										}
+									}
+								});
+
+								database.collection("posts").updateOne({
+									"_id": ObjectId(_id)
+								}, {
+									$push: {
+										"likers": {
+											"_id": user._id,
+											"name": user.name,
+											"profileImage": user.profileImage
+										}
+									}
+								}, function (error, data) {
+
+									database.collection("users").updateOne({
+										$and: [{
+											"_id": post.user._id
+										}, {
+											"posts._id": post._id
+										}]
+									}, {
+										$push: {
+											"posts.$[].likers": {
+												"_id": user._id,
+												"name": user.name,
+												"profileImage": user.profileImage
+											}
+										}
+									});
+
+									result.json({
+										"status": "success",
+										"message": "Post has been liked."
+									});
+								});
+							}
+
+						}
+					});
+
 				}
 			});
 		});

@@ -89,6 +89,95 @@
 				}
 			}
 
+			function createLikesSection(data) {
+
+			var isLiked = false;
+			for (var b = 0; b < data.likers.length; b++) {
+				var liker = data.likers[b];
+				if (liker._id == window.user._id) {
+					isLiked = true;
+					break;
+				}
+			}
+
+			var html = "";
+
+			html += '<div class="we-video-info">';
+				html += '<ul>';
+
+					html += '<li>';
+
+						var className = "";
+						if (isLiked) {
+							className = "like";
+						} else {
+							className = "none";
+						}
+
+						html += '<span class="' + className + '" onclick="toggleLikePost(this);" data-id="' + data._id + '">';
+							html += '<i class="ti-thumb-up"></i>';
+							html += '<ins>' + data.likers.length + '</ins>';
+						html += '</span>';
+
+					html += '</li>';
+
+					html += '<li>';
+						html += '<span class="comment" title="Comments">';
+							html += '<i class="fa fa-comments-o"></i>';
+							html += '<ins id="count-post-comments-' + data._id + '">' + data.comments.length + '</ins>';
+						html += '</span>';
+					html += '</li>';
+
+					html += '<li>';
+						html += '<span class="share" onclick="sharePost(this);" data-id="' + data._id + '">';
+							html += '<i class="ti-share"></i>';
+							html += '<ins>' + data.shares.length + '</ins>';
+						html += '</span>';
+					html += '</li>';
+
+				html += '</ul>';
+			html += '</div>';
+
+			return html;
+			}
+
+			function toggleLikePost(self) {
+				var _id = self.getAttribute("data-id");
+
+				var ajax = new XMLHttpRequest();
+				ajax.open("POST", "/toggleLikePost", true);
+
+				ajax.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+
+						var response = JSON.parse(this.responseText);
+
+						if (response.status == "success") {
+							self.className = "like";
+
+							var likes = parseInt(self.querySelector("ins").innerHTML);
+							likes++;
+							self.querySelector("ins").innerHTML = likes;
+						}
+						if (response.status == "unliked") {
+							self.className = "none";
+
+							var likes = parseInt(self.querySelector("ins").innerHTML);
+							likes--;
+							self.querySelector("ins").innerHTML = likes;
+						}
+						if (response.status == "error") {
+							alert(response.message);
+						}
+					}
+				};
+
+				var formData = new FormData();
+				formData.append("accessToken", localStorage.getItem("accessToken"));
+				formData.append("_id", _id);
+				ajax.send(formData);
+			}
+
         	function previewPostImage(self) {
 				var file = self.files;
 				if (file.length > 0) {
