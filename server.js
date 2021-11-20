@@ -294,5 +294,42 @@ http.listen(3000, function () {
 			});
 		});
 
+		app.post("/updateProfile", function (request, result) {
+			var accessToken = request.fields.accessToken;
+			var name = request.fields.name;
+			var dob = request.fields.dob;
+			var city = request.fields.city;
+			var country = request.fields.country;
+			var aboutMe = request.fields.aboutMe;
+
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+					database.collection("users").updateOne({
+						"accessToken": accessToken
+					}, {
+						$set: {
+							"name": name,
+							"dob": dob,
+							"city": city,
+							"country": country,
+							"aboutMe": aboutMe
+						}
+					}, function (error, data) {
+						result.json({
+							"status": "status",
+							"message": "Profile has been updated."
+						});
+					});
+				}
+			});
+		});
+
 	});
 });
