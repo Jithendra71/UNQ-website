@@ -11,6 +11,10 @@
 
 <body>
 
+	<%
+		months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	%>
+
 	<div class="theme-layout">
 
 		<div class="topbar stick">
@@ -35,6 +39,8 @@
 
         <script>
             var mainURL = "http://localhost:3000";
+
+			var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 			function showAddPost() {
 				if (localStorage.getItem("accessToken")) {
