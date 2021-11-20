@@ -35,6 +35,11 @@ function getUser() {
                         showProfileData();
                     }
 
+                    if (typeof isHomePage !== "undefined" && isHomePage) {
+                        showAddPost();
+                        showNewsfeed();
+                    }
+
                 } else {
                     localStorage.removeItem("accessToken");
                 }
