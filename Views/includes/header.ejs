@@ -254,13 +254,11 @@
 				return false;
 			}
 
-
 			function prepareToReply(self) {
 				$("#replyModal input[name='postId']").val(self.getAttribute("data-post-id"));
 				$("#replyModal input[name='commentId']").val(self.getAttribute("data-comment-id"));
 				$("#replyModal").modal("show");
 			}
-
 
 			function doPostReply(form) {
 				var ajax = new XMLHttpRequest();
@@ -324,6 +322,39 @@
 				formData.append("accessToken", localStorage.getItem("accessToken"));
 				formData.append("_id", _id);
 				ajax.send(formData);
+			}
+
+			function sharePost(self) {
+				if (confirm("Are you sure you want to share this post ?")) {
+					var _id = self.getAttribute("data-id");
+
+					var ajax = new XMLHttpRequest();
+					ajax.open("POST", "/sharePost", true);
+
+					ajax.onreadystatechange = function() {
+						if (this.readyState == 4 && this.status == 200) {
+
+							var response = JSON.parse(this.responseText);
+
+							alert(response.message);
+
+							if (response.status == "success") {
+								self.className = "like";
+
+								var shares = parseInt(self.querySelector("ins").innerHTML);
+								shares++;
+								self.querySelector("ins").innerHTML = shares;
+
+								showNewsfeed();
+							}
+						}
+					};
+
+					var formData = new FormData();
+					formData.append("accessToken", localStorage.getItem("accessToken"));
+					formData.append("_id", _id);
+					ajax.send(formData);
+				}
 			}
 
         	function previewPostImage(self) {

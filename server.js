@@ -805,5 +805,89 @@ http.listen(3000, function () {
 			});
 		});
 
+		app.post("/sharePost", function (request, result) {
+
+			var accessToken = request.fields.accessToken;
+			var _id = request.fields._id;
+			var type = "shared";
+			var createdAt = new Date().getTime();
+
+			database.collection("users").findOne({
+				"accessToken": accessToken
+			}, function (error, user) {
+				if (user == null) {
+					result.json({
+						"status": "error",
+						"message": "User has been logged out. Please login again."
+					});
+				} else {
+
+					database.collection("posts").findOne({
+						"_id": ObjectId(_id)
+					}, function (error, post) {
+						if (post == null) {
+							result.json({
+								"status": "error",
+								"message": "Post does not exist."
+							});
+						} else {
+
+							database.collection("posts").updateOne({
+								"_id": ObjectId(_id)
+							}, {
+								$push: {
+									"shares": {
+										"_id": user._id,
+										"name": user.name,
+										"profileImage": user.profileImage
+									}
+								}
+							}, function (error, data) {
+
+								database.collection("posts").insertOne({
+									"caption": post.caption,
+									"image": post.image,
+									"video": post.video,
+									"type": type,
+									"createdAt": createdAt,
+									"likers": [],
+									"comments": [],
+									"shares": [],
+									"user": {
+										"_id": user._id,
+										"name": user.name,
+										"gender": user.gender,
+										"profileImage": user.profileImage
+									}
+								}, function (error, data) {
+
+									database.collection("users").updateOne({
+										$and: [{
+											"_id": post.user._id
+										}, {
+											"posts._id": post._id
+										}]
+									}, {
+										$push: {
+											"posts.$[].shares": {
+												"_id": user._id,
+												"name": user.name,
+												"profileImage": user.profileImage
+											}
+										}
+									});
+
+									result.json({
+										"status": "success",
+										"message": "Post has been shared."
+									});
+								});
+							});
+						}
+					});
+				}
+			});
+		});
+
 	});
 });
