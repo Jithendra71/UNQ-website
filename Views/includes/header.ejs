@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Social Network</title>
+	<title>UNQ Website</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/public/css/main.min.css">
@@ -21,7 +21,7 @@
 			<div class="logo">
 				<a href="/" style="font-size: 28px; bottom: 3px; position: relative;">
 					<!-- <img src="/public/img/logo.png" style="width: 70px;"> -->
-					Social Network
+					UNQ Website
 				</a>
 			</div>
 
@@ -31,6 +31,19 @@
 				</ul>
 
 				<ul class="setting-area">
+					<li>
+						<a href="#">
+							<i class="ti-search"></i>
+						</a>
+						<div class="searched">
+							<form onsubmit="return false;" class="form-search">
+								<input type="type" placeholder="Search Friend">
+								<button data-ripple type="button" onclick="onSearch(this);">
+									<i class="ti-search"></i>
+								</button>
+							</form>
+						</div>
+					</li>
 
 				</ul>
 
@@ -389,6 +402,10 @@
 
 					fileReader.readAsDataURL(file[0]);
 				}
+			}
+
+			function onSearch(button) {
+				window.location.href = "/search" + button.previousElementSibling.value;
 			}
         </script>
 
