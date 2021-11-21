@@ -10,8 +10,6 @@
 						<ul class="nav nav-tabs">
 							<li>
 								<a class="active" data-toggle="tab" href="#people">People</a>
-								<a data-toggle="tab" href="#pages">Pages</a>
-								<a data-toggle="tab" href="#groups">Groups</a>
 							</li>
 						</ul>
 					</div>
@@ -31,14 +29,6 @@
 									<div class="tab-content">
 										<div class="tab-pane active fade show" id="people">
 											<ul class="nearby-contct" id="search-results"></ul>
-										</div>
-
-										<div class="tab-pane active fade" id="pages">
-											<ul class="nearby-contct" id="search-result-pages"></ul>									
-										</div>
-
-										<div class="tab-pane active fade" id="groups">
-											<ul class="nearby-contct" id="search-result-groups"></ul>
 										</div>
 									</div>
 								</div>
@@ -89,18 +79,18 @@
 						html += '<li>';
 							html += '<div class="nearly-pepls">';
 								html += '<figure>';
-									html += '<a href="/user/' + data.username + '">';
+									html += '<a href="/';
 										html += '<img src="' + mainURL + '/' + data.profileImage + '">';
 									html += '</a>';
 								html += '</figure>';
 
 								html += '<div class="pepl-info">';
 									html += '<h4>';
-										html += '<a href="/user/' + data.username + '">' + data.name + '</a>';
+										html += '<a href="/">' + data.name + '</a>';
 									html += '</h4>';
 									
 									if(isFriend){
-										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="doUnfriend(this);" class="add-butn btn-unfriend">Unfriend</a>';
+										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="doUnfriend(this);" class="add-butn btn-unfriend">Delete</a>';
 									}
 									else{
 										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="sendFriendRequest(this);" class="add-butn">Add Friend</a>';
@@ -136,13 +126,12 @@
 				alert(response.message);
 				self.remove();
 			}
-		}
+		};
 
 		var formData = new FormData();
 		formData.append("accessToken", localStorage.getItem("accessToken"));
 		formData.append("_id", _id);
 		ajax.send(formData);
-
 	}
 
 </script>
