@@ -34,10 +34,13 @@
 </section>
 
 <script>
-	var isFriends = True;
+	var isFriends = true;
 
 	function showFriends() {
-		var html = "";
+		var html = '<h1 class="friends">FRIENDS</h1>';
+		if(window.user.friends.length===0){
+			html += "<h3>NO FRIENDS YET</h3>"
+		}
 		for (var a = 0; a < window.user.friends.length; a++){
 			var data = window.user.friends[a];
 
