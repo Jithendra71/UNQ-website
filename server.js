@@ -207,7 +207,7 @@ http.listen(3000, function () {
 								}
 							}, function(error,data){
 								database.collection("users").updateOne({
-									"_id": me.id
+									"_id": me._id
 								}, {
 									$push: {
 										"friends": {
