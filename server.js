@@ -33,7 +33,7 @@ http.listen(3000, function () {
 
 	console.log("Server started at " + mainURL);
 	mongoClient.connect("mongodb://localhost:27017", function (error, client) {
-		var database = client.db("my_social_network");
+		var database = client.db("UNQ_Website");
 		console.log("Database connected. " + database);
 
 		app.get("/signup", function (request, result) {
@@ -197,7 +197,7 @@ http.listen(3000, function () {
 							}, {
 								$push: {
 									"friends": {
-										"_id": me.id,
+										"_id": me._id,
 										"name": me.name,
 										"profileImage": me.profileImage,
 										"status": "Pending",
@@ -220,6 +220,19 @@ http.listen(3000, function () {
 										}
 									}
 								}, function(error,data){
+									database.collection("users").updateOne({
+										"_id": ObjectId(_id)
+									}, {
+										$push: {
+											"notifications": {
+												"_id": ObjectId(),
+												"type": "friend_request_sent",
+												"content": me.name + " sent you friend request.",
+												"profileImage": me.profileImage,
+												"createdAt": new Date().getTime()
+											}
+										}
+									});
 									result.json({
 										"status": "success",
 										"message": "Friend Request has been sent."
@@ -340,10 +353,23 @@ http.listen(3000, function () {
 							}, {
 								$pull: {
 									"friends": {
-										"_id": user.id
+										"_id": user._id
 									}
 								}
 							}, function(error,data){
+								database.collection("users").updateOne({
+									"_id": ObjectId(_id)
+								}, {
+									$push: {
+										"notifications": {
+											"_id": ObjectId(),
+											"type": "unfriend",
+											"content": me.name + " has deleted your friend request.",
+											"profileImage": me.profileImage,
+											"createdAt": new Date().getTime()
+										}
+									}
+								});
 								result.json({
 									"status": "success",
 									"message": "Friend has been removed."
@@ -1227,5 +1253,8 @@ http.listen(3000, function () {
 			});
 		});
 
+		app.get("/notifications", function (request, result) {
+			result.render("notifications");
+		});
 	});
 });
