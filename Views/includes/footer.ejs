@@ -70,6 +70,17 @@ function getUser() {
                         showFriends();
                     }
 
+                    if (typeof isNotifications !== "undefined" && isNotifications) {
+							showNotifications();
+						} else {
+							var notificationsCount = 0;
+							for (var a = 0; a < window.user.notifications.length; a++) {
+								if (!window.user.notifications[a].isRead) {
+									notificationsCount++;
+								}
+							}
+						}
+
                 } else {
                     localStorage.removeItem("accessToken");
                 }

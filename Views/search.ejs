@@ -90,7 +90,7 @@
 									html += '</h4>';
 									
 									if(isFriend){
-										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="doUnfriend(this);" class="add-butn btn-unfriend">Delete</a>';
+										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="doUnfriend(this);" class="add-butn btn-unfriend">Unfriend</a>';
 									}
 									else{
 										html += '<a href="javascript:void(0);" data-id="'+ data._id + '" onclick="sendFriendRequest(this);" class="add-butn">Add Friend</a>';
@@ -100,7 +100,9 @@
 							html += '</div>';
 						html += '</li>';
 					}
-
+					if(html===''){
+						html += "<h3>No Results Found</h3>"
+					}
 					document.getElementById("search-results").innerHTML = html;
 
 				} else {

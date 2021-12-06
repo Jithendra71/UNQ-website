@@ -98,6 +98,20 @@ img {
     max-width: 100%;
 }
 
+.friends {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    color: #424242;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    /* padding: 20px 20px 10px; */
+    position: relative;
+    text-transform: uppercase;
+    width: 100%;
+}
+
 .theme-layout {
     float: left;
     position: relative;
