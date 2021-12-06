@@ -336,7 +336,7 @@ http.listen(3000, function () {
 						}
 						else {
 							database.collection("users").updateOne({
-								"_id": me._id
+								"_id": ObjectId(_id)
 							}, {
 								$pull: {
 									"friends": {
@@ -347,6 +347,39 @@ http.listen(3000, function () {
 								result.json({
 									"status": "success",
 									"message": "Friend has been removed."
+=======
+										"_id": me._id
+									}
+								}
+							}, function(error,data){
+								database.collection("users").updateOne({
+									"_id": me._id
+								}, {
+									$pull: {
+										"friends": {
+											"_id": user._id
+										}
+									}
+								}, function(error,data){
+									database.collection("users").updateOne({
+										"_id": ObjectId(_id)
+									}, {
+										$push: {
+											"notifications": {
+												"_id": ObjectId(),
+												"type": "friend_request_deleted",
+												"content": me.name + " has deleted your friend request.",
+												"profileImage": me.profileImage,
+												"deletedAt": new Date().getTime()
+											}
+										}
+									}, function(error,data){
+										result.json({
+											"status": "success",
+											"message": "Friend has been removed"
+										});
+									});
+>>>>>>> Stashed changes
 								});
 							});
 						}
