@@ -258,11 +258,6 @@ section {
     z-index: 1;
 }
 
-.pattern:before {
-    background: #088dcd url("../images/dot-pattern.png") repeat scroll 0 0;
-    opacity: 0.45;
-}
-
 .whitish:before {
     background: rgba(255, 255, 255, .9);
 }
@@ -2566,20 +2561,7 @@ footer .logo {
     margin-bottom: 0;
 }
 
-.theme-layout::before {
-    background: url(../images/dot-pattern.png);
-    background-repeat: repeat;
-    content: "";
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 99;
-    transition: all 0.5s linear 0s;
-    visibility: hidden;
-    opacity: 0;
-}
+
 
 .theme-layout.active::before {
     opacity: 1;
