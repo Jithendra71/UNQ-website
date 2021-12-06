@@ -340,6 +340,7 @@ http.listen(3000, function () {
 							}, {
 								$pull: {
 									"friends": {
+<<<<<<< Updated upstream
 										"_id": user.id
 									}
 								}
