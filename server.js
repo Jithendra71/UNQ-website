@@ -31,7 +31,7 @@ socketIO.on("connection", function (socket) {
 http.listen(3000, function () {
 
 	console.log("Server started at " + mainURL);
-	mongoClient.connect("mongodb+srv://admin:Zeph2002@cluster0.tsrno.mongodb.net/UNQWebsite", function (error, client) {
+	mongoClient.connect("mongodb://localhost:27017/", function (error, client) {
 		var database = client.db("UNQ-Website");
 		console.log("Database connected. " + database);
 
