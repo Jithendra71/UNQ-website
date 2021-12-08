@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-
+var Socket = require('socket.io-client')
 var formidable = require("express-formidable");
 app.use(formidable());
 
@@ -21,7 +21,6 @@ app.set("view engine", "ejs");
 var socketIO = require("socket.io")(http);
 var socketID = "";
 var users = [];
-
 var mainURL = "http://localhost:3000";
 
 socketIO.on("connection", function (socket) {
@@ -64,16 +63,14 @@ http.listen(3000, function () {
 							"password": hash,
 							"gender": gender,
 							"reset_token": reset_token,
-							"profileImage": "",
-							"coverPhoto": "",
+							"profileImage": "public/img/default_profile.jpg",
+							"coverPhoto": "public/img/default_cover.jpg",
 							"dob": "",
 							"city": "",
 							"country": "",
 							"aboutMe": "",
 							"friends": [],
-							"pages": [],
 							"notifications": [],
-							"groups": [],
 							"posts": []
 						}, function (error, data) {
 							result.json({
@@ -197,7 +194,7 @@ http.listen(3000, function () {
 							}, {
 								$push: {
 									"friends": {
-										"_id": me.id,
+										"_id": me._id,
 										"name": me.name,
 										"profileImage": me.profileImage,
 										"status": "Pending",
@@ -207,7 +204,7 @@ http.listen(3000, function () {
 								}
 							}, function(error,data){
 								database.collection("users").updateOne({
-									"_id": me.id
+									"_id": me._id
 								}, {
 									$push: {
 										"friends": {
@@ -340,15 +337,6 @@ http.listen(3000, function () {
 							}, {
 								$pull: {
 									"friends": {
-<<<<<<< Updated upstream
-										"_id": user.id
-									}
-								}
-							}, function(error,data){
-								result.json({
-									"status": "success",
-									"message": "Friend has been removed."
-=======
 										"_id": me._id
 									}
 								}
@@ -380,7 +368,6 @@ http.listen(3000, function () {
 											"message": "Friend has been removed"
 										});
 									});
->>>>>>> Stashed changes
 								});
 							});
 						}
@@ -393,10 +380,9 @@ http.listen(3000, function () {
 			result.render("inbox");
 		});
 
-		app.get("/getFriendsChat", function(request,result){
+		app.post("/getFriendsChat", function(request,result){
 			var accessToken = request.fields.accessToken;
 			var _id = request.fields._id;
-
 			database.collection("users").findOne({
 				"accessToken": accessToken
 			}, function(error,user){
@@ -411,7 +397,6 @@ http.listen(3000, function () {
 						return friend._id == _id
 					});
 					var inbox = user.friends[index].inbox;
-
 					result.json({
 						"status": "success",
 						"message": "Record has been fetched",
@@ -509,7 +494,7 @@ http.listen(3000, function () {
 				else{
 					users[user._id] = socketID;
 					result.json({
-						"status": "status",
+						"status": "success",
 						"message": "Socket has been connected."
 					});
 				}
@@ -1259,6 +1244,10 @@ http.listen(3000, function () {
 					});
 				}
 			});
+		});
+
+		app.get("/notifications", function (request, result) {
+			result.render("notifications");
 		});
 
 	});

@@ -1,62 +1,11 @@
-<%- include ("includes/header") %>
-<section>
-	<div class="gap gray-bg">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row" id="page-contents">
+    // var socketIO = require('socket.io-client')
 
-						<div class="col-md-3">
-							<%- include ("includes/left-sidebar") %>
-						</div>
-
-						<div class="col-md-6">
-							<div class="central-meta">
-								<div class="messages">
-									<h5 class="f-title">
-										<i class="ti-bell"></i>
-										All Messages
-										<span class="more-options">
-											<i class="fa fa-ellipsis-h"></i>
-										</span>
-									</h5>
-									<div class="message-box">
-										<ul class="peoples" id="friends"></ul>
-										<div class="peoples-mesg-box">
-
-											<div class="conversation-head" id="conversation-head"></div>
-
-											<ul class="chatting-area" id="chatting-area"></ul>
-
-											<div class="message-text-container">
-												<form method="post" onsubmit="return doSendMessage(this);">
-													<textarea name="message"></textarea>
-													<button title="send">
-														<i class="fa fa-paper-plane"></i>
-													</button>
-												</form>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-
-<script src="/public/js/socketIO.js"></script>
-
-<script>
+	// var socketIO = process.env.socketIO
 	
     var isFriends = true;
 	var selectedFriend = null;
 	var friends = [];
-	var socket = io();
+
 	function showFriends(){
 		var html = "";
 		friends = window.user.friends;
@@ -194,7 +143,3 @@
 		formData.append("accessToken", localStorage.getItem("accessToken"));
 		ajax.send(formData);
 	}
-
-</script>
-
-<%- include ("includes/footer") %>
