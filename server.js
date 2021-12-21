@@ -29,9 +29,11 @@ socketIO.on("connection", function (socket) {
 	socketID = socket.id;
 });
 
+var port_number = server.listen(process.env.PORT || 3000);
+
 process.env.db = 'Zeph2002@cluster0.tsrno.mongodb.net/unq-app'
 
-http.listen(3000, function () {
+http.listen(port_number, function () {
 
 	console.log("Server started at " + mainURL);
 	mongoClient.connect("mongodb+srv://admin:"+process.env.db, function (error, client) {
