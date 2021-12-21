@@ -13,6 +13,7 @@ var bcrypt = require("bcrypt");
 var fileSystem = require("fs");
 
 var jwt = require("jsonwebtoken");
+const { env } = require("process");
 var accessTokenSecret = "myAccessTokenSecret1234567890";
 
 app.use("/public", express.static(__dirname + "/public"));
@@ -28,10 +29,12 @@ socketIO.on("connection", function (socket) {
 	socketID = socket.id;
 });
 
+process.env.db = 'Zeph2002@cluster0.tsrno.mongodb.net/unq-app'
+
 http.listen(3000, function () {
 
 	console.log("Server started at " + mainURL);
-	mongoClient.connect("mongodb://localhost:27017/", function (error, client) {
+	mongoClient.connect("mongodb+srv://admin:"+process.env.db, function (error, client) {
 		var database = client.db("UNQ-Website");
 		console.log("Database connected. " + database);
 
